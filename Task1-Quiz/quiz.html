@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Dynamic Quiz</title>
+</head>
+
+<body>
+
+    <h1>Dynamic Quiz</h1>
+
+    <!-- Q1 -->
+    <p><strong>Q1. What does HTML stand for?</strong></p>
+    <label><input type="radio" name="q1" value="Hyper Text Markup Language" /> Hyper Text Markup Language</label><br />
+    <label><input type="radio" name="q1" value="High Tech Modern Language" /> High Tech Modern Language</label><br />
+    <label><input type="radio" name="q1" value="Hyper Transfer Markup Language" /> Hyper Transfer Markup
+        Language</label><br />
+    <br />
+
+    <!-- Q2 -->
+    <p><strong>Q2. Which language is used for styling web pages?</strong></p>
+    <label><input type="radio" name="q2" value="JavaScript" /> JavaScript</label><br />
+    <label><input type="radio" name="q2" value="CSS" /> CSS</label><br />
+    <label><input type="radio" name="q2" value="Python" /> Python</label><br />
+    <br />
+
+    <!-- Q3 -->
+    <p><strong>Q3. What does CSS stand for?</strong></p>
+    <label><input type="radio" name="q3" value="Cascading Style Sheets" /> Cascading Style Sheets</label><br />
+    <label><input type="radio" name="q3" value="Computer Style Sheets" /> Computer Style Sheets</label><br />
+    <label><input type="radio" name="q3" value="Creative Style System" /> Creative Style System</label><br />
+    <br />
+
+    <!-- Q4 -->
+    <p><strong>Q4. Which JS method selects an element by ID?</strong></p>
+    <label><input type="radio" name="q4" value="getElementByClass()" /> getElementByClass()</label><br />
+    <label><input type="radio" name="q4" value="getElementById()" /> getElementById()</label><br />
+    <label><input type="radio" name="q4" value="selectElement()" /> selectElement()</label><br />
+    <br />
+
+    <!-- Q5 -->
+    <p><strong>Q5. Inside which HTML tag do we put JavaScript?</strong></p>
+    <label><input type="radio" name="q5" value="js" /> &lt;js&gt;</label><br />
+    <label><input type="radio" name="q5" value="scripting" /> &lt;scripting&gt;</label><br />
+    <label><input type="radio" name="q5" value="script" /> &lt;script&gt;</label><br />
+    <br />
+
+    <button onclick="calculateScore()">Submit Quiz</button>
+    <button onclick="resetQuiz()">Reset Quiz</button>
+
+    <br /><br />
+    <div id="result"></div>
+
+    <script src="quiz.js"></script>
+</body>
+
+</html>

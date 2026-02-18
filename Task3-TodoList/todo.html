@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>To-Do List</title>
+</head>
+
+<body>
+
+    <h1>To-Do List</h1>
+
+    <!-- Task 1 -->
+    <div id="task1">
+        <span id="task1-text">Task 1: Buy groceries</span>
+        <button onclick="completeTask('task1-text')">Complete</button>
+        <button onclick="removeTask('task1')">Remove</button>
+    </div>
+
+    <!-- Task 2 -->
+    <div id="task2">
+        <span id="task2-text">Task 2: Do homework</span>
+        <button onclick="completeTask('task2-text')">Complete</button>
+        <button onclick="removeTask('task2')">Remove</button>
+    </div>
+
+    <!-- Task 3 -->
+    <div id="task3">
+        <span id="task3-text">Task 3: Clean the room</span>
+        <button onclick="completeTask('task3-text')">Complete</button>
+        <button onclick="removeTask('task3')">Remove</button>
+    </div>
+
+    <br />
+    <button onclick="completeAll()">Complete All</button>
+
+    <script src="todo.js"></script>
+</body>
+
+</html>

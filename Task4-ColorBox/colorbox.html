@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Color Box Generator</title>
+</head>
+
+<body>
+
+    <h1>Color Box Generator</h1>
+
+    <!-- 3 color input fields -->
+    <label>Color 1:</label>
+    <input type="text" id="color1" placeholder="e.g. red" />
+    <button onclick="addBox1()">Add Color 1</button>
+    <br /><br />
+
+    <label>Color 2:</label>
+    <input type="text" id="color2" placeholder="e.g. blue" />
+    <button onclick="addBox2()">Add Color 2</button>
+    <br /><br />
+
+    <label>Color 3:</label>
+    <input type="text" id="color3" placeholder="e.g. green" />
+    <button onclick="addBox3()">Add Color 3</button>
+    <br /><br />
+
+    <button onclick="clearAll()">Clear All</button>
+
+    <br /><br />
+    <!-- Area where color boxes appear -->
+    <div id="box-container"></div>
+
+    <hr />
+    <!-- Browser Information (BOM) -->
+    <h2>Browser Information</h2>
+    <p id="browser-info"></p>
+
+    <script>
+        // Display BOM info on page load
+        document.getElementById("browser-info").innerHTML =
+            "Window Width: " + window.innerWidth + "px<br/>" +
+            "Window Height: " + window.innerHeight + "px<br/>" +
+            "User Agent: " + navigator.userAgent;
+
+        // Helper function: creates and appends a colored div box
+        function createBox(color) {
+            if (color === "") {
+                alert("Please enter a color name.");
+                return;
+            }
+            var container = document.getElementById("box-container");
+            var box = document.createElement("div");
+            box.style.backgroundColor = color;
+            box.style.width = "100px";
+            box.style.height = "100px";
+            box.style.display = "inline-block";
+            box.style.margin = "5px";
+            box.style.border = "1px solid black";
+            box.innerText = color;
+            container.appendChild(box);
+        }
+
+        // Separate function for each input
+        function addBox1() {
+            var color = document.getElementById("color1").value;
+            createBox(color);
+        }
+
+        function addBox2() {
+            var color = document.getElementById("color2").value;
+            createBox(color);
+        }
+
+        function addBox3() {
+            var color = document.getElementById("color3").value;
+            createBox(color);
+        }
+
+        // Clear All — removes all boxes from the container
+        function clearAll() {
+            document.getElementById("box-container").innerHTML = "";
+        }
+    </script>
+
+</body>
+
+</html>

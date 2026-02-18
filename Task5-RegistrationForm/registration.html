@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Registration Form</title>
+</head>
+
+<body>
+
+    <h1>Registration Form</h1>
+
+    <!-- Name Field -->
+    <label>Name:</label><br />
+    <input type="text" id="name" placeholder="Enter your name" /><br />
+    <span id="name-error"></span><br /><br />
+
+    <!-- Email Field -->
+    <label>Email:</label><br />
+    <input type="text" id="email" placeholder="Enter your email" /><br />
+    <span id="email-error"></span><br /><br />
+
+    <!-- Age Field -->
+    <label>Age:</label><br />
+    <input type="number" id="age" placeholder="Enter your age" /><br />
+    <span id="age-error"></span><br /><br />
+
+    <!-- Password Field -->
+    <label>Password:</label><br />
+    <input type="password" id="password" placeholder="Enter your password" /><br />
+    <span id="password-error"></span><br /><br />
+
+    <button onclick="submitForm()">Register</button>
+
+    <br /><br />
+    <div id="success-message"></div>
+
+    <script>
+        // Validate Name — must not be empty
+        function validateName() {
+            var name = document.getElementById("name").value.trim();
+            var error = document.getElementById("name-error");
+            if (name === "") {
+                error.innerText = "Error: Name must not be empty.";
+                return false;
+            }
+            error.innerText = "";
+            return true;
+        }
+
+        // Validate Email — must contain "@"
+        function validateEmail() {
+            var email = document.getElementById("email").value.trim();
+            var error = document.getElementById("email-error");
+            if (email.indexOf("@") === -1) {
+                error.innerText = "Error: Email must contain '@'.";
+                return false;
+            }
+            error.innerText = "";
+            return true;
+        }
+
+        // Validate Age — must be between 18 and 60
+        function validateAge() {
+            var age = parseInt(document.getElementById("age").value);
+            var error = document.getElementById("age-error");
+            if (isNaN(age) || age < 18 || age > 60) {
+                error.innerText = "Error: Age must be between 18 and 60.";
+                return false;
+            }
+            error.innerText = "";
+            return true;
+        }
+
+        // Validate Password — must be at least 6 characters
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var error = document.getElementById("password-error");
+            if (password.length < 6) {
+                error.innerText = "Error: Password must be at least 6 characters.";
+                return false;
+            }
+            error.innerText = "";
+            return true;
+        }
+
+        // Main submit function — runs all validations
+        function submitForm() {
+            var isNameValid = validateName();
+            var isEmailValid = validateEmail();
+            var isAgeValid = validateAge();
+            var isPasswordValid = validatePassword();
+
+            if (isNameValid && isEmailValid && isAgeValid && isPasswordValid) {
+                // Show success message
+                document.getElementById("success-message").innerHTML =
+                    "<h2>All fields are valid!</h2>";
+
+                // Confirm submission
+                var confirmed = confirm("Are you sure you want to submit the registration?");
+                if (confirmed) {
+                    alert("Registration Successful!");
+
+                    // Bonus: ask for feedback using prompt()
+                    var feedback = prompt("Please share your feedback (optional):");
+                    if (feedback !== null && feedback.trim() !== "") {
+                        alert("Thank you for your feedback: " + feedback);
+                    }
+                }
+            } else {
+                document.getElementById("success-message").innerHTML = "";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
