@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task 1 – Student Management System</title>
+  <link rel="stylesheet" href="../styles.css" />
+  <!-- Internal Style for task-specific tweaks -->
+  <style>
+    .course-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="back-nav">
+    <a href="../index.html">← Back to Lab 3</a>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <span class="lab-badge">Task 1</span>
+    <h1>🎓 Student Management System</h1>
+    <p>ES6 Classes · Constructor · Template Literals · DOM Manipulation</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Add Student Form -->
+    <div class="card">
+      <h2><span class="icon">➕</span> Add New Student</h2>
+      <div class="input-group">
+        <input type="number" id="studentId"   placeholder="Student ID"  />
+        <input type="text"   id="studentName" placeholder="Full Name"   />
+      </div>
+      <div class="input-group">
+        <input type="number" id="semester"    placeholder="Semester (1–8)" min="1" max="8" />
+        <input type="text"   id="courses"     placeholder="Courses (comma-separated)" />
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="addStudent()">➕ Add Student</button>
+        <button class="btn btn-secondary" onclick="renderStudents()">🔄 Refresh List</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-row" id="statsRow">
+      <div class="stat-box">
+        <div class="stat-value" id="totalStudents">0</div>
+        <div class="stat-label">Total Students</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="avgSemester">-</div>
+        <div class="stat-label">Avg. Semester</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="totalCourses">0</div>
+        <div class="stat-label">Total Courses</div>
+      </div>
+    </div>
+
+    <!-- Student List -->
+    <div class="card">
+      <h2><span class="icon">📋</span> Student Directory</h2>
+      <div id="studentList">
+        <p class="text-muted">Students will appear here...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- External JS -->
+  <script src="student.js"></script>
+
+  <!-- Inline JS: bootstrap with 3 default students on page load -->
+  <script>
+    // Inline: initialize defaults when DOM is ready
+    window.addEventListener('DOMContentLoaded', () => {
+      // Pre-load 3 default students using addStudent helper
+      const defaults = [
+        { id: 101, name: 'Alice Johnson',  semester: 5, courses: ['Web Dev', 'Database', 'OS'] },
+        { id: 102, name: 'Bob Smith',      semester: 3, courses: ['Math', 'Physics', 'OOP'] },
+        { id: 103, name: 'Carol Williams', semester: 7, courses: ['AI', 'ML', 'Data Science', 'Cloud'] },
+      ];
+      defaults.forEach(s => {
+        studentRegistry.push(new Student(s.id, s.name, s.semester, s.courses));
+      });
+      renderStudents();
+    });
+  </script>
+
+</body>
+</html>

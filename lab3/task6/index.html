@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 6 – Mini University Portal</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+        .section-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 8px 18px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface2);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .uni-student-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .uni-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .save-progress {
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="back-nav"><a href="../index.html">← Back to Lab 3</a></nav>
+
+    <div class="page-header">
+        <span class="lab-badge">Task 6</span>
+        <h1>🏛️ Mini University Portal</h1>
+        <p>Class + Map + Set + Promise — Combined System</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Stats Overview -->
+        <div class="stat-row" id="uniStats">
+            <div class="stat-box">
+                <div class="stat-value" id="st_students">0</div>
+                <div class="stat-label">Students (Map)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="st_courses">0</div>
+                <div class="stat-label">Courses (Set)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="st_saves">0</div>
+                <div class="stat-label">Records Saved</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="section-tabs">
+            <button class="tab-btn active" onclick="switchTab('students')">🎓 Students</button>
+            <button class="tab-btn" onclick="switchTab('courses')">📚 Courses</button>
+            <button class="tab-btn" onclick="switchTab('portal')">💾 Portal Log</button>
+        </div>
+
+        <!-- Tab: Students -->
+        <div class="tab-panel active" id="tab-students">
+            <div class="card">
+                <h2><span class="icon">➕</span> Enroll Student</h2>
+                <div class="input-group">
+                    <input type="number" id="uniStudId" placeholder="Student ID" />
+                    <input type="text" id="uniStudName" placeholder="Full Name" />
+                    <input type="number" id="uniSem" placeholder="Semester" min="1" max="8" />
+                </div>
+                <div class="input-group">
+                    <input type="text" id="uniCourses" placeholder="Courses (comma-separated)" />
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="enrollStudent()">🎓 Enroll & Save</button>
+                    <button class="btn btn-secondary" onclick="loadSampleStudents()">📥 Load Sample Data</button>
+                </div>
+                <div id="saveStatus" class="save-progress"></div>
+            </div>
+            <div class="card">
+                <h2><span class="icon">📋</span> Enrolled Students (Map)</h2>
+                <div id="studentMapDisplay">
+                    <p class="text-muted">No students enrolled yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Courses -->
+        <div class="tab-panel" id="tab-courses">
+            <div class="card">
+                <h2><span class="icon">📚</span> Register Course (Set)</h2>
+                <div class="input-group">
+                    <input type="text" id="uniCourseInput" placeholder="Course name..." />
+                    <button class="btn btn-primary" onclick="registerCourse()">➕ Register</button>
+                </div>
+            </div>
+            <div class="card">
+                <h2><span class="icon">📋</span> All Unique Courses (Set)</h2>
+                <div id="courseSetDisplay">
+                    <p class="text-muted">No courses registered yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Portal Log -->
+        <div class="tab-panel" id="tab-portal">
+            <div class="card">
+                <h2><span class="icon">💾</span> Promise Save Log</h2>
+                <p class="text-muted mb-2">Each enrolment simulates saving data via a Promise.</p>
+                <div id="portalLog">
+                    <p class="text-muted">No save operations yet.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="portal.js"></script>
+</body>
+
+</html>

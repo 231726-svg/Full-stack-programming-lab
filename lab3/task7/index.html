@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 7 – Student Data (JSON)</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+        .json-box {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .json-key {
+            color: #79c0ff;
+        }
+
+        .json-string {
+            color: #a5d6ff;
+        }
+
+        .json-number {
+            color: #f2cc60;
+        }
+
+        .json-bool {
+            color: #ff7b72;
+        }
+
+        .json-null {
+            color: #8b949e;
+        }
+
+        .process-arrow {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+
+        .student-detail-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 12px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .student-detail-card h3 {
+            font-size: 1rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding: 6px 0;
+            font-size: 0.88rem;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="back-nav"><a href="../index.html">← Back to Lab 3</a></nav>
+
+    <div class="page-header">
+        <span class="lab-badge">Task 7</span>
+        <h1>📄 Student Data – JSON</h1>
+        <p>JSON.stringify() · JSON.parse() · Destructuring · forEach / map()</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Step Controls -->
+        <div class="card">
+            <h2><span class="icon">▶️</span> Run JSON Operations</h2>
+            <p class="text-muted mb-2">Click each step to see the JSON transformation pipeline:</p>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="step_stringify()">1️⃣ JSON.stringify()</button>
+                <button class="btn btn-secondary" onclick="step_parse()">2️⃣ JSON.parse()</button>
+                <button class="btn btn-success" onclick="step_destructure()">3️⃣ Destructure + Display</button>
+                <button class="btn btn-primary" onclick="runAll()">🚀 Run All Steps</button>
+            </div>
+        </div>
+
+        <!-- Original Objects -->
+        <div class="card">
+            <h2><span class="icon">📦</span> Step 0 – Original Student Objects (JS)</h2>
+            <div id="originalObjects">
+                <p class="text-muted">Click a step to begin...</p>
+            </div>
+        </div>
+
+        <div class="process-arrow">⬇️ JSON.stringify()</div>
+
+        <!-- Stringified JSON -->
+        <div class="card">
+            <h2><span class="icon">📝</span> Step 1 – JSON String</h2>
+            <div id="stringifyOutput">
+                <p class="text-muted">Waiting for stringify step...</p>
+            </div>
+        </div>
+
+        <div class="process-arrow">⬇️ JSON.parse()</div>
+
+        <!-- Parsed Back -->
+        <div class="card">
+            <h2><span class="icon">🔄</span> Step 2 – Parsed Back to JavaScript Objects</h2>
+            <div id="parseOutput">
+                <p class="text-muted">Waiting for parse step...</p>
+            </div>
+        </div>
+
+        <div class="process-arrow">⬇️ Destructuring + forEach()</div>
+
+        <!-- Final Display -->
+        <div class="card">
+            <h2><span class="icon">🎓</span> Step 3 – Displayed via Destructuring + forEach()</h2>
+            <div id="finalDisplay">
+                <p class="text-muted">Waiting for destructure step...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="json-students.js"></script>
+    <!-- Run display of original objects on load (inline) -->
+    <script>
+        window.addEventListener('DOMContentLoaded', showOriginals);
+    </script>
+</body>
+
+</html>

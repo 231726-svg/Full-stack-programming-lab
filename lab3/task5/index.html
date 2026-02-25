@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 5 – Product Catalog</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+        .product-table-wrap {
+            overflow-x: auto;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .cat-electronics {
+            background: rgba(34, 211, 238, 0.15);
+            color: var(--secondary);
+        }
+
+        .cat-clothing {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent);
+        }
+
+        .cat-books {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .cat-sports {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+
+        .cat-other {
+            background: rgba(148, 163, 184, 0.15);
+            color: var(--text-muted);
+        }
+
+        .search-result {
+            background: rgba(108, 99, 255, 0.08);
+            border: 1px solid rgba(108, 99, 255, 0.25);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 10px;
+        }
+
+        .action-icons button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .action-icons .del-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="back-nav"><a href="../index.html">← Back to Lab 3</a></nav>
+
+    <div class="page-header">
+        <span class="lab-badge">Task 5</span>
+        <h1>🏪 Product Catalog</h1>
+        <p>ES6 Map · Key-Value Store · Search · Delete</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Add Product -->
+        <div class="card">
+            <h2><span class="icon">➕</span> Add Product</h2>
+            <div class="input-group">
+                <input type="number" id="prodId" placeholder="Product ID" />
+                <input type="text" id="prodName" placeholder="Product Name" />
+                <input type="number" id="prodPrice" placeholder="Price ($)" step="0.01" />
+            </div>
+            <div class="input-group">
+                <select id="prodCategory">
+                    <option value="">-- Category --</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Books">Books</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="number" id="prodStock" placeholder="Stock Qty" />
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="addProduct()">➕ Add to Catalog</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-row">
+            <div class="stat-box">
+                <div class="stat-value" id="productCount">0</div>
+                <div class="stat-label">Total Products (Map.size)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="totalValue">$0</div>
+                <div class="stat-label">Catalog Value</div>
+            </div>
+        </div>
+
+        <!-- Search & Delete -->
+        <div class="card">
+            <h2><span class="icon">🔍</span> Search / Delete by ID</h2>
+            <div class="input-group">
+                <input type="number" id="searchId" placeholder="Enter Product ID..." />
+                <button class="btn btn-primary" onclick="searchProduct()">🔍 Search</button>
+                <button class="btn btn-danger" onclick="deleteProduct()">🗑️ Delete</button>
+            </div>
+            <div id="searchResult"></div>
+        </div>
+
+        <!-- Product Table -->
+        <div class="card">
+            <h2><span class="icon">📋</span> All Products</h2>
+            <div class="product-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <tr>
+                            <td colspan="6" class="text-muted">No products yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="catalog.js"></script>
+</body>
+
+</html>

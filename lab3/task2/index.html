@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 2 – Online Shopping Cart</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .product-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            cursor: pointer;
+            text-align: left;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.88rem;
+            transition: all 0.2s ease;
+        }
+
+        .product-btn:hover {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        .product-btn .price {
+            color: var(--success);
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+        }
+
+        .cart-item .item-price {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: rgba(108, 99, 255, 0.08);
+            border: 1px solid rgba(108, 99, 255, 0.25);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            font-size: 0.88rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="back-nav"><a href="../index.html">← Back to Lab 3</a></nav>
+
+    <div class="page-header">
+        <span class="lab-badge">Task 2</span>
+        <h1>🛒 Online Shopping Cart</h1>
+        <p>Rest Operator · Spread Operator · Array Destructuring</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Products -->
+        <div class="card">
+            <h2><span class="icon">📦</span> Available Products</h2>
+            <p class="text-muted mb-2">Click a product to add it to cart</p>
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <!-- Cart Controls -->
+        <div class="card">
+            <h2><span class="icon">🛒</span> Shopping Cart</h2>
+            <div class="btn-group">
+                <button class="btn btn-danger" onclick="clearCart()">🗑️ Clear Cart</button>
+                <button class="btn btn-secondary" onclick="cloneCart()">📋 Clone Cart (Spread)</button>
+                <button class="btn btn-success" onclick="destructureCart()">🔍 Destructure Cart</button>
+            </div>
+
+            <!-- Destructuring Result -->
+            <div class="highlight-box" id="destructureResult" style="display:none"></div>
+
+            <!-- Cart Items -->
+            <div id="cartItems">
+                <p class="text-muted">Your cart is empty.</p>
+            </div>
+
+            <!-- Cart Stats -->
+            <div class="stat-row mt-2" id="cartStats" style="display:none">
+                <div class="stat-box">
+                    <div class="stat-value" id="cartCount">0</div>
+                    <div class="stat-label">Items</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="cartTotal">$0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clone Cart -->
+        <div class="card" id="cloneSection" style="display:none">
+            <h2><span class="icon">📋</span> Cloned Cart (Spread Operator)</h2>
+            <div id="clonedCartItems"></div>
+        </div>
+
+    </div>
+
+    <script src="cart.js"></script>
+</body>
+
+</html>

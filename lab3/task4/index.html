@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 4 – Course Registration System</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .course-chip {
+            background: rgba(108, 99, 255, 0.12);
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .course-chip .remove-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 2px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            line-height: 1;
+        }
+
+        .course-chip .remove-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .log-entry {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            margin-bottom: 4px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .log-new {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+        }
+
+        .log-dup {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+        }
+
+        .log-del {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+        }
+
+        .preset-courses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .preset-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="back-nav"><a href="../index.html">← Back to Lab 3</a></nav>
+
+    <div class="page-header">
+        <span class="lab-badge">Task 4</span>
+        <h1>📚 Course Registration System</h1>
+        <p>ES6 Set · Duplicate Detection · for...of Loop</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Add Course -->
+        <div class="card">
+            <h2><span class="icon">➕</span> Register Course</h2>
+            <p class="text-muted mb-2">Quick-add preset courses:</p>
+            <div class="preset-courses" id="presetCourses"></div>
+            <div class="input-group">
+                <input type="text" id="courseInput" placeholder="Enter course name..." />
+                <button class="btn btn-primary" onclick="addCourse()">➕ Add</button>
+                <button class="btn btn-secondary" onclick="addDupTest()">⚠️ Add Duplicate</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stat-row">
+            <div class="stat-box">
+                <div class="stat-value" id="courseSize">0</div>
+                <div class="stat-label">Unique Courses</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="dupCount">0</div>
+                <div class="stat-label">Duplicates Blocked</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="totalAdded">0</div>
+                <div class="stat-label">Total Attempts</div>
+            </div>
+        </div>
+
+        <!-- Course List -->
+        <div class="card">
+            <h2><span class="icon">📋</span> Registered Courses (for...of Loop)</h2>
+            <button class="btn btn-danger mb-2" onclick="clearCourses()" style="margin-bottom:12px">🗑️ Clear
+                All</button>
+            <div class="course-grid" id="courseGrid">
+                <p class="text-muted">No courses registered yet.</p>
+            </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="card">
+            <h2><span class="icon">📄</span> Activity Log</h2>
+            <div id="activityLog">
+                <p class="text-muted">Activity will appear here...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="courses.js"></script>
+</body>
+
+</html>

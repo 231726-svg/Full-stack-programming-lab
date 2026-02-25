@@ -1,0 +1,334 @@
+/* =============================================
+   Lab 3 - Shared Stylesheet
+   Author: Full-Stack Programming Lab
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+/* ---- CSS Variables ---- */
+:root {
+  --primary: #6c63ff;
+  --primary-dark: #4f46e5;
+  --secondary: #22d3ee;
+  --accent: #f59e0b;
+  --danger: #ef4444;
+  --success: #10b981;
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #273549;
+  --border: #334155;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --radius: 12px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glow: 0 0 20px rgba(108, 99, 255, 0.3);
+}
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ---- Container ---- */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* ---- Page Header ---- */
+.page-header {
+  text-align: center;
+  padding: 48px 24px 36px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+
+.page-header .lab-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.page-header h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff, var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ---- Section Cards ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--primary);
+  box-shadow: var(--glow), var(--shadow);
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--secondary);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card h2 .icon {
+  font-size: 1.3rem;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(108, 99, 255, 0.4);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108, 99, 255, 0.5); }
+
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--primary); background: rgba(108,99,255,0.1); }
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--danger), #b91c1c);
+  color: #fff;
+}
+.btn-danger:hover { transform: translateY(-2px); }
+
+.btn-success {
+  background: linear-gradient(135deg, var(--success), #059669);
+  color: #fff;
+}
+.btn-success:hover { transform: translateY(-2px); }
+
+.btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+
+/* ---- Inputs ---- */
+.input-group { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+
+input[type="text"], input[type="number"], select {
+  flex: 1;
+  min-width: 160px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+}
+
+/* ---- Output / Result Areas ---- */
+#output, .output-area {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  min-height: 60px;
+}
+
+/* ---- Student / Product Cards ---- */
+.item-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.item-card:hover { border-color: var(--primary); }
+
+.item-card .item-title {
+  font-weight: 600;
+  color: var(--secondary);
+  margin-bottom: 6px;
+}
+
+.item-card .item-meta {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.tag {
+  display: inline-block;
+  background: rgba(108,99,255,0.2);
+  color: var(--primary);
+  border: 1px solid rgba(108,99,255,0.3);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  margin: 2px;
+}
+
+/* ---- Badge / Stat ---- */
+.stat-row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
+.stat-box {
+  flex: 1;
+  min-width: 120px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  text-align: center;
+}
+.stat-box .stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+.stat-box .stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ---- Table ---- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 0.88rem;
+}
+th {
+  background: rgba(108,99,255,0.15);
+  color: var(--secondary);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(108,99,255,0.06); }
+
+/* ---- Alert ---- */
+.alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 0.88rem; }
+.alert-success { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
+.alert-danger  { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);  color: #f87171; }
+.alert-info    { background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.3); color: var(--secondary); }
+.alert-warning { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; }
+
+/* ---- Loading Spinner ---- */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 12px 0;
+}
+.spinner {
+  width: 20px; height: 20px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- Promise Status ---- */
+.promise-pending  { color: var(--accent); }
+.promise-resolved { color: var(--success); }
+.promise-rejected { color: var(--danger); }
+
+/* ---- Back Nav ---- */
+.back-nav {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.back-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.back-nav a:hover { color: var(--primary); }
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* ---- Animations ---- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+
+/* ---- Utility ---- */
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.text-muted { color: var(--text-muted); }
+.text-success { color: var(--success); }
+.text-danger  { color: var(--danger); }
+.text-accent  { color: var(--accent); }
+.text-primary { color: var(--primary); }
+.bold { font-weight: 700; }
+.code { font-family: 'Fira Code', monospace; font-size: 0.85rem; }
