@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 8 – Quiz Game | Lab 04</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- jQuery 3.6.0 CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* ── Quiz Specific Styles ── */
+
+        /* Progress bar at top */
+        .quiz-progress-wrap {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(108, 99, 255, .2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c63ff, #a78bfa);
+            border-radius: 4px;
+            transition: width .5s ease;
+        }
+
+        .quiz-step {
+            font-size: .8rem;
+            color: #9e9e9e;
+            white-space: nowrap;
+        }
+
+        /* Question card */
+        .question-card {
+            animation: qFadeIn .4s ease both;
+        }
+
+        @keyframes qFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question-card h3 {
+            font-size: 1.15rem;
+            color: #e0e0e0;
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .question-number {
+            font-size: .78rem;
+            color: #6c63ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: .5rem;
+        }
+
+        /* Options */
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.4rem;
+        }
+
+        .option-item {
+            padding: .75rem 1.2rem;
+            margin-bottom: .6rem;
+            border-radius: 10px;
+            border: 2px solid rgba(108, 99, 255, .25);
+            background: #0f3460;
+            cursor: pointer;
+            font-size: .92rem;
+            transition: border-color .2s, background .2s, transform .2s;
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+        }
+
+        .option-item:hover:not(.locked) {
+            border-color: rgba(108, 99, 255, .7);
+            background: rgba(108, 99, 255, .15);
+            transform: translateX(4px);
+        }
+
+        .option-item.selected {
+            border-color: #6c63ff;
+            background: rgba(108, 99, 255, .25);
+        }
+
+        .option-item.correct {
+            border-color: #00e676;
+            background: rgba(0, 230, 118, .15);
+            color: #00e676;
+        }
+
+        .option-item.wrong {
+            border-color: #ff1744;
+            background: rgba(255, 23, 68, .15);
+            color: #ff6166;
+        }
+
+        .option-label {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(108, 99, 255, .4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Feedback */
+        .feedback-msg {
+            display: none;
+            padding: .6rem 1rem;
+            border-radius: 8px;
+            font-size: .88rem;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-msg.correct {
+            background: rgba(0, 230, 118, .12);
+            border: 1px solid rgba(0, 230, 118, .4);
+            color: #00e676;
+        }
+
+        .feedback-msg.wrong {
+            background: rgba(255, 23, 68, .12);
+            border: 1px solid rgba(255, 23, 68, .4);
+            color: #ff6166;
+        }
+
+        /* Result Screen */
+        #resultScreen {
+            display: none;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(#6c63ff 0%, #a78bfa var(--pct), rgba(108, 99, 255, .15) var(--pct));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 32px rgba(108, 99, 255, .35);
+            animation: scorePop .6s ease both;
+        }
+
+        @keyframes scorePop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            70% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .score-inner {
+            width: 110px;
+            height: 110px;
+            background: #16213e;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .score-label {
+            font-size: .72rem;
+            color: #9e9e9e;
+        }
+
+        .result-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+        }
+
+        .result-sub {
+            color: #9e9e9e;
+            margin-bottom: 1.5rem;
+            font-size: .9rem;
+        }
+
+        /* Animated stars */
+        .stars {
+            font-size: 2rem;
+            margin-bottom: .8rem;
+            animation: starsIn .6s ease .3s both;
+        }
+
+        @keyframes starsIn {
+            from {
+                transform: scale(0) rotate(-30deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* Timer */
+        .quiz-timer {
+            font-size: .82rem;
+            color: #9e9e9e;
+            text-align: right;
+            margin-bottom: .8rem;
+        }
+
+        #timerVal {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Lab 04</a>
+        <span style="color:#9e9e9e;font-size:.9rem;">Task 08 – Quiz Game</span>
+    </nav>
+
+    <!-- ── Page Header ── -->
+    <div class="page-header">
+        <h1>jQuery Quiz Game</h1>
+        <p>Answer 5 multiple-choice questions — one at a time — and see your animated score!</p>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="task-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="card">
+            <h2>Task 08 – jQuery Knowledge Quiz</h2>
+
+            <!-- ── Quiz Screen ── -->
+            <div id="quizScreen">
+
+                <!-- Progress -->
+                <div class="quiz-progress-wrap">
+                    <div class="quiz-progress-bar">
+                        <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%;"></div>
+                    </div>
+                    <div class="quiz-step" id="quizStep">Q 1 / 5</div>
+                </div>
+
+                <!-- Timer -->
+                <div class="quiz-timer">⏱ Time: <span id="timerVal">20</span>s</div>
+
+                <!-- Question -->
+                <div class="question-card" id="questionCard">
+                    <p class="question-number" id="questionNum">Question 1</p>
+                    <h3 id="questionText">Loading…</h3>
+
+                    <!-- Options -->
+                    <ul class="options-list" id="optionsList"></ul>
+
+                    <!-- Feedback -->
+                    <div class="feedback-msg" id="feedbackMsg"></div>
+
+                    <!-- Next Button -->
+                    <button id="nextBtn" class="btn btn-primary" style="display:none;">Next Question →</button>
+                    <button id="finishBtn" class="btn btn-success" style="display:none;">🏁 See Results</button>
+                </div>
+
+            </div><!-- /quizScreen -->
+
+            <!-- ── Result Screen ── -->
+            <div id="resultScreen">
+                <div class="stars" id="resultStars">⭐⭐⭐</div>
+                <div class="score-circle" id="scoreCircle">
+                    <div class="score-inner">
+                        <span class="score-number" id="scoreNumber">0/5</span>
+                        <span class="score-label">Score</span>
+                    </div>
+                </div>
+                <h3 class="result-title" id="resultTitle">Great Job!</h3>
+                <p class="result-sub" id="resultSub">You answered all questions.</p>
+                <div class="flex" style="justify-content:center;gap:1rem;flex-wrap:wrap;">
+                    <button id="restartBtn" class="btn btn-primary">🔄 Play Again</button>
+                    <a href="index.html" class="btn btn-secondary">← Back to Home</a>
+                </div>
+            </div><!-- /resultScreen -->
+
+        </div><!-- /card -->
+    </div><!-- /task-container -->
+
+    <!-- ───────────────────────────────────────────
+     Task 8 – jQuery Quiz Logic
+─────────────────────────────────────────────── -->
+    <script>
+        $(document).ready(function () {
+
+            /* ═══════════════════════════════════
+               Q U E S T I O N   D A T A
+            ═══════════════════════════════════ */
+            var questions = [
+                {
+                    text: 'Which jQuery method is used to make an HTTP GET request to a server?',
+                    options: ['$.post()', '$.get()', '$.ajax()', '$.load()'],
+                    correct: 1  // 0-based index
+                },
+                {
+                    text: 'What does the jQuery selector $("p.highlight") select?',
+                    options: [
+                        'All <p> elements that contain a child with class "highlight"',
+                        'All <p> elements AND all elements with class "highlight"',
+                        'All <p> elements that have the class "highlight"',
+                        'The first <p> element on the page'
+                    ],
+                    correct: 2
+                },
+                {
+                    text: 'Which method is used to attach an event handler in jQuery 3.x (recommended way)?',
+                    options: ['.bind()', '.live()', '.delegate()', '.on()'],
+                    correct: 3
+                },
+                {
+                    text: 'What is jQuery method chaining?',
+                    options: [
+                        'Linking multiple jQuery files together',
+                        'Calling multiple methods on the same jQuery object in one statement',
+                        'Creating a chain of event listeners',
+                        'Using jQuery inside a loop'
+                    ],
+                    correct: 1
+                },
+                {
+                    text: 'Which jQuery effect makes an element gradually appear?',
+                    options: ['.show()', '.slideDown()', '.fadeIn()', 'Both .fadeIn() and .slideDown()'],
+                    correct: 3
+                }
+            ];
+
+            /* ═══════════════════════════════════
+               S T A T E
+            ═══════════════════════════════════ */
+            var current = 0;   // current question index
+            var score = 0;   // correct answers
+            var answered = false;
+            var timerInterval;
+            var timeLeft = 20;  // seconds per question
+            var LABELS = ['A', 'B', 'C', 'D'];
+
+            /* ═══════════════════════════════════
+               R E N D E R   Q U E S T I O N
+            ═══════════════════════════════════ */
+            function renderQuestion() {
+                answered = false;
+                var q = questions[current];
+                var total = questions.length;
+
+                /* Progress bar */
+                var pct = (current / total) * 100;
+                $('#quizProgressFill').css('width', pct + '%');
+                $('#quizStep').text('Q ' + (current + 1) + ' / ' + total);
+
+                /* Question text – fade transition */
+                $('#questionCard').fadeOut(200, function () {
+                    $('#questionNum').text('Question ' + (current + 1));
+                    $('#questionText').text(q.text);
+
+                    /* Render options */
+                    var $ul = $('#optionsList').empty();
+                    $.each(q.options, function (i, opt) {
+                        var $li = $('<li>').addClass('option-item').attr('data-index', i);
+                        $li.html('<span class="option-label">' + LABELS[i] + '</span> ' + opt);
+                        $li.on('click', function () { selectOption($(this), i); });
+                        $ul.append($li);
+                    });
+
+                    /* Hide buttons & feedback */
+                    $('#feedbackMsg').hide().removeClass('correct wrong');
+                    $('#nextBtn, #finishBtn').hide();
+
+                    $(this).fadeIn(300);
+                });
+
+                /* Reset and start timer */
+                resetTimer();
+            }
+
+            /* ═══════════════════════════════════
+               S E L E C T   O P T I O N
+            ═══════════════════════════════════ */
+            function selectOption($el, index) {
+                if (answered) return;  // prevent double-click
+                answered = true;
+                clearInterval(timerInterval);
+
+                var correct = questions[current].correct;
+                var isRight = (index === correct);
+
+                /* Mark all options */
+                $('.option-item').addClass('locked');
+                $el.addClass(isRight ? 'correct' : 'wrong selected');
+                if (!isRight) {
+                    $('.option-item').eq(correct).addClass('correct');
+                }
+
+                /* Feedback message */
+                var msg = isRight
+                    ? '✅ Correct! Well done.'
+                    : '❌ Wrong! The correct answer was: ' + LABELS[correct] + ' – ' + questions[current].options[correct];
+                $('#feedbackMsg')
+                    .text(msg)
+                    .removeClass('correct wrong')
+                    .addClass(isRight ? 'correct' : 'wrong')
+                    .slideDown(250);
+
+                /* Update score */
+                if (isRight) score++;
+
+                /* Show next or finish button */
+                if (current < questions.length - 1) {
+                    $('#nextBtn').fadeIn(200);
+                } else {
+                    $('#finishBtn').fadeIn(200);
+                }
+            }
+
+            /* ═══════════════════════════════════
+               T I M E R
+            ═══════════════════════════════════ */
+            function resetTimer() {
+                clearInterval(timerInterval);
+                timeLeft = 20;
+                $('#timerVal').text(timeLeft).css('color', '#a78bfa');
+
+                timerInterval = setInterval(function () {
+                    timeLeft--;
+                    $('#timerVal').text(timeLeft);
+
+                    if (timeLeft <= 5) {
+                        $('#timerVal').css('color', '#ff1744');
+                    }
+
+                    /* Time's up → auto-mark wrong */
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        if (!answered) {
+                            answered = true;
+                            var correct = questions[current].correct;
+                            $('.option-item').addClass('locked').eq(correct).addClass('correct');
+                            $('#feedbackMsg')
+                                .text("⏱ Time's up! Correct answer: " + LABELS[correct] + ' – ' + questions[current].options[correct])
+                                .addClass('wrong')
+                                .slideDown(250);
+                            if (current < questions.length - 1) {
+                                $('#nextBtn').fadeIn(200);
+                            } else {
+                                $('#finishBtn').fadeIn(200);
+                            }
+                        }
+                    }
+                }, 1000);
+            }
+
+            /* ═══════════════════════════════════
+               N E X T   Q U E S T I O N
+            ═══════════════════════════════════ */
+            $('#nextBtn').on('click', function () {
+                current++;
+                renderQuestion();
+            });
+
+            /* ═══════════════════════════════════
+               S H O W   R E S U L T S
+            ═══════════════════════════════════ */
+            $('#finishBtn').on('click', function () {
+                clearInterval(timerInterval);
+
+                var total = questions.length;
+                var pct = Math.round((score / total) * 100);
+
+                /* Stars */
+                var stars = score >= 4 ? '⭐⭐⭐' : score >= 2 ? '⭐⭐' : '⭐';
+                /* Result copy */
+                var title = score === total ? '🎉 Perfect Score!' :
+                    score >= 3 ? '👏 Great Job!' :
+                        score >= 1 ? '🙂 Keep Practicing' :
+                            '😅 Better Luck Next Time!';
+                var sub = 'You got ' + score + ' out of ' + total + ' questions correct (' + pct + '%)';
+
+                /* Update DOM */
+                $('#resultStars').text(stars);
+                $('#scoreNumber').text(score + '/' + total);
+                $('#scoreCircle').css('--pct', pct + '%');
+                $('#resultTitle').text(title);
+                $('#resultSub').text(sub);
+
+                /* Transition quiz → result */
+                $('#quizScreen').fadeOut(400, function () {
+                    $('#resultScreen').fadeIn(500);
+                });
+            });
+
+            /* ═══════════════════════════════════
+               R E S T A R T
+            ═══════════════════════════════════ */
+            $('#restartBtn').on('click', function () {
+                current = 0;
+                score = 0;
+                answered = false;
+
+                $('#resultScreen').fadeOut(300, function () {
+                    $('#quizScreen').fadeIn(400);
+                    renderQuestion();
+                });
+            });
+
+            /* ── Start Quiz ── */
+            renderQuestion();
+
+        });
+    </script>
+</body>
+
+</html>

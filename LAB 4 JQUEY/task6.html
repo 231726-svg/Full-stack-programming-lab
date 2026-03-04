@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 6 – API Data Fetcher | Lab 04</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- jQuery 3.6.0 CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* ── API Fetcher Specific ── */
+        .post-card {
+            background: #0f3460;
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            margin-bottom: .8rem;
+            border-left: 4px solid #6c63ff;
+            animation: fadeSlideIn .35s ease both;
+            opacity: 0;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-card h4 {
+            font-size: .95rem;
+            color: #a78bfa;
+            margin-bottom: .3rem;
+            text-transform: capitalize;
+        }
+
+        .post-card p {
+            font-size: .82rem;
+            color: #9e9e9e;
+            line-height: 1.6;
+        }
+
+        .post-id {
+            font-size: .72rem;
+            color: #555;
+            margin-bottom: .4rem;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+            padding: .8rem 1rem;
+            background: rgba(108, 99, 255, .1);
+            border-radius: 8px;
+            font-size: .85rem;
+            color: #a78bfa;
+        }
+
+        .stats-bar span {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* Loading state */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 2rem 0;
+            color: #9e9e9e;
+            font-size: .9rem;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(108, 99, 255, .3);
+            border-top-color: #6c63ff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            vertical-align: middle;
+            margin-right: .5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* End of results */
+        .end-msg {
+            display: none;
+            text-align: center;
+            color: #555;
+            font-size: .85rem;
+            padding: 1rem 0;
+            font-style: italic;
+        }
+
+        /* Controls */
+        .fetch-controls {
+            display: flex;
+            gap: .8rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Lab 04</a>
+        <span style="color:#9e9e9e;font-size:.9rem;">Task 06 – API Data Fetcher</span>
+    </nav>
+
+    <!-- ── Page Header ── -->
+    <div class="page-header">
+        <h1>API Data Fetcher</h1>
+        <p>Fetch posts from JSONPlaceholder via jQuery Ajax – no page reload</p>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="task-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="card">
+            <h2>Task 06 – JSONPlaceholder Posts</h2>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                Loaded: <span id="loadedCount">0</span> posts &nbsp;|&nbsp; Showing page <span id="currentPage">0</span>
+            </div>
+
+            <!-- Controls -->
+            <div class="fetch-controls">
+                <button id="fetchBtn" class="btn btn-primary">🔄 Fetch First Batch</button>
+                <button id="loadMoreBtn" class="btn btn-secondary" style="display:none;">+ Load More</button>
+                <button id="clearBtn" class="btn btn-danger" style="display:none;">🗑 Clear</button>
+            </div>
+
+            <!-- Loader -->
+            <div class="loader" id="loader">
+                <div class="spinner"></div> Fetching data from API…
+            </div>
+
+            <!-- Posts List -->
+            <div id="postsList"></div>
+
+            <!-- End of data message -->
+            <p class="end-msg" id="endMsg">✅ All 100 posts have been loaded.</p>
+
+        </div>
+    </div>
+
+    <!-- ───────────────────────────────────────────
+     Task 6 – jQuery Ajax Logic
+─────────────────────────────────────────────── -->
+    <script>
+        $(document).ready(function () {
+
+            var API_URL = 'https://jsonplaceholder.typicode.com/posts';
+            var PAGE_SIZE = 10;    // posts per load
+            var currentPage = 0;    // tracks how many batches loaded
+            var allPosts = [];    // cached data from API
+            var totalLoaded = 0;
+
+            /* ── Helper: render a batch of posts ── */
+            function renderPosts(posts) {
+                posts.forEach(function (post, i) {
+                    var delay = i * 60; // stagger animation
+                    var $card = $('<div>').addClass('post-card').css('animation-delay', delay + 'ms');
+                    $card.html(
+                        '<p class="post-id">Post #' + post.id + '</p>' +
+                        '<h4>' + post.title + '</h4>' +
+                        '<p>' + post.body + '</p>'
+                    );
+                    $('#postsList').append($card);
+                });
+            }
+
+            /* ── Helper: update UI counters ── */
+            function updateStats() {
+                $('#loadedCount').text(totalLoaded);
+                $('#currentPage').text(currentPage);
+            }
+
+            /* ── Initial Fetch ($.get) ── */
+            $('#fetchBtn').on('click', function () {
+                if (allPosts.length > 0) return;  // already fetched
+
+                $('#loader').show();
+                $(this).prop('disabled', true).text('Loading…');
+
+                // Use jQuery $.get() to fetch from API
+                $.get(API_URL, function (data) {
+                    allPosts = data;
+                    $('#loader').hide();
+
+                    // Render first batch
+                    currentPage = 1;
+                    var batch = allPosts.slice(0, PAGE_SIZE);
+                    renderPosts(batch);
+                    totalLoaded = batch.length;
+                    updateStats();
+
+                    // Show/hide buttons
+                    $('#fetchBtn').hide();
+                    $('#loadMoreBtn, #clearBtn').show();
+
+                    // If all data fits in one page, hide "Load More"
+                    if (allPosts.length <= PAGE_SIZE) {
+                        $('#loadMoreBtn').hide();
+                        $('#endMsg').show();
+                    }
+
+                }).fail(function () {
+                    $('#loader').hide();
+                    $('#fetchBtn').prop('disabled', false).text('🔄 Retry Fetch');
+                    alert('Failed to fetch data. Check your internet connection.');
+                });
+            });
+
+            /* ── Load More ── */
+            $('#loadMoreBtn').on('click', function () {
+                var start = currentPage * PAGE_SIZE;
+                var end = start + PAGE_SIZE;
+                var batch = allPosts.slice(start, end);
+
+                if (batch.length === 0) {
+                    $('#loadMoreBtn').hide();
+                    $('#endMsg').show();
+                    return;
+                }
+
+                renderPosts(batch);
+                currentPage++;
+                totalLoaded += batch.length;
+                updateStats();
+
+                // Check if we've reached the end
+                if (currentPage * PAGE_SIZE >= allPosts.length) {
+                    $('#loadMoreBtn').hide();
+                    $('#endMsg').show();
+                }
+
+                // Smooth scroll to newly added content
+                $('html, body').animate({
+                    scrollTop: $(document).height()
+                }, 600);
+            });
+
+            /* ── Clear ── */
+            $('#clearBtn').on('click', function () {
+                $('#postsList').empty();
+                $('#endMsg').hide();
+                $('#loadMoreBtn').hide();
+                $('#clearBtn').hide();
+                $('#fetchBtn').show().prop('disabled', false).text('🔄 Fetch First Batch');
+                allPosts = [];
+                currentPage = 0;
+                totalLoaded = 0;
+                updateStats();
+            });
+
+        });
+    </script>
+</body>
+
+</html>

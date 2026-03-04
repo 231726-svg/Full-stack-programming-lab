@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 4 – Tabbed Content | Lab 04</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- jQuery 3.6.0 CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* ── Tab Styles ── */
+        .tabs-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-bottom: 0;
+            border-bottom: 2px solid rgba(108, 99, 255, .3);
+            padding-bottom: .6rem;
+        }
+
+        .tab-btn {
+            padding: .55rem 1.2rem;
+            border: 2px solid rgba(108, 99, 255, .3);
+            border-radius: 8px 8px 0 0;
+            background: transparent;
+            color: #9e9e9e;
+            font-family: 'Poppins', sans-serif;
+            font-size: .88rem;
+            cursor: pointer;
+            transition: background .25s, color .25s, border-color .25s, transform .2s;
+        }
+
+        .tab-btn:hover {
+            color: #a78bfa;
+            border-color: rgba(108, 99, 255, .6);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6c63ff, #a78bfa);
+            color: #fff;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(108, 99, 255, .35);
+        }
+
+        /* ── Tab Panels ── */
+        .tab-panels {
+            padding-top: 1.5rem;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: tabFadeIn .4s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes tabFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-panel h3 {
+            color: #a78bfa;
+            font-size: 1.1rem;
+            margin-bottom: .8rem;
+        }
+
+        .tab-panel p {
+            color: #ccc;
+            font-size: .92rem;
+            line-height: 1.8;
+        }
+
+        .tab-panel ul {
+            margin: .8rem 0 0 1.2rem;
+            color: #ccc;
+            font-size: .88rem;
+            line-height: 2;
+        }
+
+        /* Progress indicator */
+        .tab-progress {
+            height: 3px;
+            background: rgba(255, 255, 255, .05);
+            border-radius: 2px;
+            margin: .5rem 0 1.2rem;
+            overflow: hidden;
+        }
+
+        .tab-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c63ff, #a78bfa);
+            border-radius: 2px;
+            transition: width .4s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Lab 04</a>
+        <span style="color:#9e9e9e;font-size:.9rem;">Task 04 – Tabbed Content</span>
+    </nav>
+
+    <!-- ── Page Header ── -->
+    <div class="page-header">
+        <h1>Tabbed Content &amp; Smooth Scroll</h1>
+        <p>Switch tabs with animated transitions and smooth scrolling</p>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="task-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="card">
+            <h2>Task 04 – jQuery Topics</h2>
+
+            <!-- Tab Navigation -->
+            <div class="tabs-nav" id="tabsNav">
+                <button class="tab-btn active" data-tab="tab1">Introduction</button>
+                <button class="tab-btn" data-tab="tab2">DOM Methods</button>
+                <button class="tab-btn" data-tab="tab3">Events</button>
+                <button class="tab-btn" data-tab="tab4">Ajax</button>
+                <button class="tab-btn" data-tab="tab5">Plugins</button>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="tab-progress">
+                <div class="tab-progress-fill" id="tabProgressFill" style="width:20%;"></div>
+            </div>
+
+            <!-- Tab Panels -->
+            <div class="tab-panels" id="tabPanels">
+
+                <div class="tab-panel active" id="tab1">
+                    <h3>👋 Introduction to jQuery</h3>
+                    <p>jQuery is a fast, small, and feature-rich JavaScript library. It makes things like HTML document
+                        traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use
+                        API that works across a multitude of browsers.</p>
+                    <ul>
+                        <li>Write less, do more</li>
+                        <li>Cross-browser compatible</li>
+                        <li>Rich plugin ecosystem</li>
+                        <li>Current version: 3.6.0</li>
+                    </ul>
+                </div>
+
+                <div class="tab-panel" id="tab2">
+                    <h3>🔧 DOM Manipulation Methods</h3>
+                    <p>jQuery provides powerful methods for selecting and manipulating HTML elements in the DOM tree.
+                    </p>
+                    <ul>
+                        <li><strong>.html()</strong> – Get or set inner HTML</li>
+                        <li><strong>.text()</strong> – Get or set text content</li>
+                        <li><strong>.append() / .prepend()</strong> – Insert content</li>
+                        <li><strong>.remove() / .empty()</strong> – Remove elements</li>
+                        <li><strong>.attr() / .prop()</strong> – Attributes & properties</li>
+                        <li><strong>.css()</strong> – Get or set CSS styles</li>
+                    </ul>
+                </div>
+
+                <div class="tab-panel" id="tab3">
+                    <h3>⚡ Event Handling</h3>
+                    <p>jQuery makes event binding simple and consistent across all browsers. You can attach multiple
+                        events with a single call.</p>
+                    <ul>
+                        <li><strong>.on()</strong> – Attach event handlers</li>
+                        <li><strong>.off()</strong> – Remove event handlers</li>
+                        <li><strong>.click() / .dblclick()</strong> – Mouse events</li>
+                        <li><strong>.hover()</strong> – Mouseenter + mouseleave</li>
+                        <li><strong>.keypress() / .keyup()</strong> – Keyboard events</li>
+                        <li><strong>.submit() / .change()</strong> – Form events</li>
+                    </ul>
+                </div>
+
+                <div class="tab-panel" id="tab4">
+                    <h3>🌐 Ajax with jQuery</h3>
+                    <p>jQuery's Ajax methods let you communicate with a server and load data into the page without a
+                        full page reload.</p>
+                    <ul>
+                        <li><strong>$.get()</strong> – Load data using HTTP GET</li>
+                        <li><strong>$.post()</strong> – Send data using HTTP POST</li>
+                        <li><strong>$.ajax()</strong> – Full configuration object</li>
+                        <li><strong>$.getJSON()</strong> – Fetch JSON data</li>
+                        <li>Supports Promises with <strong>.done() / .fail() / .always()</strong></li>
+                    </ul>
+                </div>
+
+                <div class="tab-panel" id="tab5">
+                    <h3>🔌 jQuery Plugins</h3>
+                    <p>The jQuery plugin ecosystem extends its core functionality. Thousands of open-source plugins are
+                        available for common tasks.</p>
+                    <ul>
+                        <li><strong>jQuery UI</strong> – Interactions, widgets, effects</li>
+                        <li><strong>jQuery Validate</strong> – Form validation</li>
+                        <li><strong>DataTables</strong> – Advanced tables</li>
+                        <li><strong>Slick</strong> – Carousel / slider</li>
+                        <li><strong>Select2</strong> – Enhanced select boxes</li>
+                    </ul>
+                </div>
+
+            </div><!-- /tab-panels -->
+        </div><!-- /card -->
+    </div><!-- /task-container -->
+
+    <!-- ───────────────────────────────────────────
+     Task 4 – jQuery Logic
+─────────────────────────────────────────────── -->
+    <script>
+        $(document).ready(function () {
+
+            var $tabs = $('.tab-btn');
+            var tabCount = $tabs.length;
+
+            /* ── Tab click handler ── */
+            $tabs.on('click', function () {
+                var targetId = $(this).data('tab');    // e.g. "tab2"
+                var tabIndex = $(this).index() + 1;   // 1-based
+
+                /* 1. Update active button */
+                $tabs.removeClass('active');
+                $(this).addClass('active');
+
+                /* 2. Animate out current panel, then swap */
+                var $activePanel = $('.tab-panel.active');
+                $activePanel.fadeOut(200, function () {
+                    $activePanel.removeClass('active');
+                    $('#' + targetId).addClass('active').hide().fadeIn(350);
+                });
+
+                /* 3. Update progress bar */
+                var pct = (tabIndex / tabCount) * 100;
+                $('#tabProgressFill').css('width', pct + '%');
+
+                /* 4. Smooth scroll to card */
+                $('html, body').animate({
+                    scrollTop: $('.card').offset().top - 80
+                }, 400);
+            });
+
+        });
+    </script>
+</body>
+
+</html>

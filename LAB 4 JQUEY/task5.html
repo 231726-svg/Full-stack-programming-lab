@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 5 – Chained Style Editor | Lab 04</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- jQuery 3.6.0 CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* ── Style Editor Specific ── */
+        .editor-preview {
+            border-radius: 10px;
+            padding: 1.8rem 2rem;
+            background: #0f3460;
+            margin-bottom: 2rem;
+            min-height: 100px;
+            border: 2px solid rgba(108, 99, 255, .3);
+            transition: all .3s ease;
+            line-height: 1.7;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .control-group {
+            background: rgba(255, 255, 255, .04);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, .07);
+        }
+
+        .control-group h4 {
+            font-size: .8rem;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: .8rem;
+        }
+
+        .control-group .flex {
+            flex-wrap: wrap;
+        }
+
+        /* Active toggle styling */
+        .btn-toggle.on {
+            background: linear-gradient(135deg, #6c63ff, #a78bfa);
+            color: #fff;
+        }
+
+        .color-swatch {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, .2);
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            display: inline-block;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .4);
+        }
+
+        .color-swatch.active {
+            border-color: #fff;
+            transform: scale(1.25);
+        }
+
+        /* Reset confirmation badge */
+        .reset-confirm {
+            display: none;
+            color: #ff8a65;
+            font-size: .8rem;
+            margin-top: .4rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Lab 04</a>
+        <span style="color:#9e9e9e;font-size:.9rem;">Task 05 – Chained Style Editor</span>
+    </nav>
+
+    <!-- ── Page Header ── -->
+    <div class="page-header">
+        <h1>Chained Style Editor</h1>
+        <p>Apply multiple style changes using jQuery method chaining</p>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="task-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="card">
+            <h2>Task 05 – Live Text Editor</h2>
+
+            <!-- Preview Paragraph -->
+            <div class="editor-preview" id="previewText">
+                jQuery makes it easy to chain multiple style changes into a single, fluent statement.
+                Each method returns the jQuery object, allowing you to apply one change after another
+                without re-selecting the element — cleaner code, same power! 🎨
+            </div>
+
+            <!-- Controls Grid -->
+            <div class="controls-grid">
+
+                <!-- Font Size -->
+                <div class="control-group">
+                    <h4>Font Size</h4>
+                    <div class="flex">
+                        <button class="btn btn-secondary btn-sm" data-size="14px">Small</button>
+                        <button class="btn btn-secondary btn-sm" data-size="18px">Medium</button>
+                        <button class="btn btn-secondary btn-sm" data-size="24px">Large</button>
+                        <button class="btn btn-secondary btn-sm" data-size="32px">XLarge</button>
+                    </div>
+                </div>
+
+                <!-- Text Color -->
+                <div class="control-group">
+                    <h4>Text Color</h4>
+                    <div class="flex" style="align-items:center;">
+                        <span class="color-swatch" data-color="#e0e0e0" style="background:#e0e0e0;"
+                            title="White"></span>
+                        <span class="color-swatch" data-color="#a78bfa" style="background:#a78bfa;"
+                            title="Purple"></span>
+                        <span class="color-swatch" data-color="#00e676" style="background:#00e676;"
+                            title="Green"></span>
+                        <span class="color-swatch" data-color="#ff6d00" style="background:#ff6d00;"
+                            title="Orange"></span>
+                        <span class="color-swatch" data-color="#ffd600" style="background:#ffd600;"
+                            title="Yellow"></span>
+                        <span class="color-swatch" data-color="#f48fb1" style="background:#f48fb1;" title="Pink"></span>
+                    </div>
+                </div>
+
+                <!-- Background Color -->
+                <div class="control-group">
+                    <h4>Background</h4>
+                    <div class="flex" style="align-items:center;">
+                        <span class="color-swatch" id="bg-dark" data-bg="#0f3460" style="background:#0f3460;"
+                            title="Dark Blue"></span>
+                        <span class="color-swatch" id="bg-purple" data-bg="rgba(108,99,255,.2)"
+                            style="background:#6c63ff;" title="Purple"></span>
+                        <span class="color-swatch" id="bg-green" data-bg="rgba(0,200,83,.15)"
+                            style="background:#00c853;" title="Green"></span>
+                        <span class="color-swatch" id="bg-dark2" data-bg="#1a1a2e" style="background:#1a1a2e;"
+                            title="Darker"></span>
+                        <span class="color-swatch" id="bg-red" data-bg="rgba(245,0,87,.15)" style="background:#f50057;"
+                            title="Red"></span>
+                    </div>
+                </div>
+
+                <!-- Bold / Italic Toggles -->
+                <div class="control-group">
+                    <h4>Typography</h4>
+                    <div class="flex">
+                        <button class="btn btn-secondary btn-sm btn-toggle" id="boldBtn">Bold</button>
+                        <button class="btn btn-secondary btn-sm btn-toggle" id="italicBtn">Italic</button>
+                        <button class="btn btn-secondary btn-sm btn-toggle" id="underlineBtn">Underline</button>
+                    </div>
+                </div>
+
+                <!-- Alignment -->
+                <div class="control-group">
+                    <h4>Alignment</h4>
+                    <div class="flex">
+                        <button class="btn btn-secondary btn-sm" data-align="left">Left</button>
+                        <button class="btn btn-secondary btn-sm" data-align="center">Center</button>
+                        <button class="btn btn-secondary btn-sm" data-align="right">Right</button>
+                    </div>
+                </div>
+
+                <!-- Reset -->
+                <div class="control-group">
+                    <h4>Reset</h4>
+                    <button class="btn btn-danger btn-sm" id="resetBtn">↺ Reset All</button>
+                    <p class="reset-confirm" id="resetConfirm">Styles reset ✔</p>
+                </div>
+
+            </div><!-- /controls-grid -->
+        </div><!-- /card -->
+    </div><!-- /task-container -->
+
+    <!-- ───────────────────────────────────────────
+     Task 5 – jQuery Logic (Chaining)
+─────────────────────────────────────────────── -->
+    <script>
+        $(document).ready(function () {
+
+            var $preview = $('#previewText');
+
+            /* ── Font Size buttons ── */
+            $('[data-size]').on('click', function () {
+                var size = $(this).data('size');
+                // Chaining: css + animate (via jQuery queue)
+                $preview.css('font-size', size)
+                    .stop(true)
+                    .animate({ opacity: 0.5 }, 150)
+                    .animate({ opacity: 1 }, 150);
+            });
+
+            /* ── Text Color swatches ── */
+            $('[data-color]').on('click', function () {
+                var color = $(this).data('color');
+                // Chaining: remove class, add class, set css
+                $('[data-color]').removeClass('active');
+                $(this).addClass('active');
+                $preview.css('color', color)
+                    .stop(true)
+                    .fadeTo(150, 0.5)
+                    .fadeTo(150, 1.0);
+            });
+
+            /* ── Background swatches ── */
+            $('[data-bg]').on('click', function () {
+                var bg = $(this).data('bg');
+                $('[data-bg]').removeClass('active');
+                $(this).addClass('active');
+                // Chain: background + transition pulse
+                $preview.css('background', bg)
+                    .stop(true)
+                    .animate({ opacity: 0.6 }, 100)
+                    .animate({ opacity: 1 }, 200);
+            });
+
+            /* ── Bold toggle ── */
+            $('#boldBtn').on('click', function () {
+                var isBold = $preview.css('font-weight') === '700' ||
+                    $preview.css('font-weight') === 'bold';
+                // Chaining: toggleClass on button, css on preview
+                $(this).toggleClass('on');
+                $preview.css('font-weight', isBold ? 'normal' : '700');
+            });
+
+            /* ── Italic toggle ── */
+            $('#italicBtn').on('click', function () {
+                var isItalic = $preview.css('font-style') === 'italic';
+                $(this).toggleClass('on');
+                $preview.css('font-style', isItalic ? 'normal' : 'italic');
+            });
+
+            /* ── Underline toggle ── */
+            $('#underlineBtn').on('click', function () {
+                var isUnderlined = $preview.css('text-decoration-line') === 'underline' ||
+                    $preview.css('text-decoration').indexOf('underline') !== -1;
+                $(this).toggleClass('on');
+                $preview.css('text-decoration', isUnderlined ? 'none' : 'underline');
+            });
+
+            /* ── Alignment ── */
+            $('[data-align]').on('click', function () {
+                $preview.css('text-align', $(this).data('align'));
+            });
+
+            /* ── Reset All (chained!) ── */
+            $('#resetBtn').on('click', function () {
+                // One long chain resetting all properties at once
+                $preview
+                    .css({
+                        'font-size': '1rem',
+                        'color': '#e0e0e0',
+                        'background': '#0f3460',
+                        'font-weight': 'normal',
+                        'font-style': 'normal',
+                        'text-decoration': 'none',
+                        'text-align': 'left'
+                    })
+                    .stop(true)
+                    .animate({ opacity: 0 }, 200)
+                    .animate({ opacity: 1 }, 300);
+
+                // Reset UI state
+                $('.btn-toggle').removeClass('on');
+                $('.color-swatch').removeClass('active');
+                $('#resetConfirm').fadeIn(200).delay(1500).fadeOut(400);
+            });
+
+        });
+    </script>
+</body>
+
+</html>

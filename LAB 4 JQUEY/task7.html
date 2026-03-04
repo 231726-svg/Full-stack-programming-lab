@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 7 – Drag &amp; Drop Sorter | Lab 04</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- jQuery 3.6.0 CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* ── Drag & Drop Specific ── */
+        .dnd-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem;
+        }
+
+        .dnd-item {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            padding: .9rem 1.2rem;
+            margin-bottom: .6rem;
+            background: #0f3460;
+            border-radius: 10px;
+            border: 2px solid rgba(108, 99, 255, .25);
+            cursor: grab;
+            transition: background .2s, border-color .2s, transform .2s, box-shadow .2s;
+            user-select: none;
+        }
+
+        .dnd-item:hover {
+            border-color: rgba(108, 99, 255, .6);
+            background: #16213e;
+        }
+
+        .dnd-item.dragging {
+            opacity: .4;
+            cursor: grabbing;
+            transform: scale(1.02);
+        }
+
+        .dnd-item.drag-over {
+            border-color: #6c63ff;
+            background: rgba(108, 99, 255, .2);
+            box-shadow: 0 0 16px rgba(108, 99, 255, .4);
+        }
+
+        /* Grip icon */
+        .grip {
+            font-size: 1.1rem;
+            color: #555;
+            cursor: grab;
+            flex-shrink: 0;
+        }
+
+        .dnd-item .rank {
+            width: 28px;
+            height: 28px;
+            background: rgba(108, 99, 255, .5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            color: #fff;
+            transition: background .2s;
+        }
+
+        .dnd-item .label {
+            flex: 1;
+            font-size: .95rem;
+        }
+
+        .dnd-item .emoji {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        /* Drop zone hint */
+        .drop-hint {
+            text-align: center;
+            color: #555;
+            font-size: .82rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        /* Order readout */
+        .order-readout {
+            background: rgba(108, 99, 255, .1);
+            border-radius: 8px;
+            padding: .8rem 1rem;
+            font-size: .82rem;
+            color: #9e9e9e;
+            margin-top: .5rem;
+        }
+
+        .order-readout strong {
+            color: #a78bfa;
+        }
+
+        /* Shuffle button flash */
+        @keyframes shufflePop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .shuffle-anim {
+            animation: shufflePop .35s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Lab 04</a>
+        <span style="color:#9e9e9e;font-size:.9rem;">Task 07 – Drag &amp; Drop Sorter</span>
+    </nav>
+
+    <!-- ── Page Header ── -->
+    <div class="page-header">
+        <h1>Drag-and-Drop Sortable List</h1>
+        <p>Reorder items by dragging — order updates dynamically using jQuery</p>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="task-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="card">
+            <h2>Task 07 – Top Programming Languages</h2>
+
+            <p class="drop-hint">☝ Drag items by the ⠿ handle to reorder the list</p>
+
+            <!-- Drag & Drop List -->
+            <ul class="dnd-list" id="dndList">
+                <li class="dnd-item" draggable="true" data-id="1">
+                    <span class="grip">⠿</span>
+                    <span class="rank">1</span>
+                    <span class="emoji">🐍</span>
+                    <span class="label">Python</span>
+                </li>
+                <li class="dnd-item" draggable="true" data-id="2">
+                    <span class="grip">⠿</span>
+                    <span class="rank">2</span>
+                    <span class="emoji">☕</span>
+                    <span class="label">JavaScript</span>
+                </li>
+                <li class="dnd-item" draggable="true" data-id="3">
+                    <span class="grip">⠿</span>
+                    <span class="rank">3</span>
+                    <span class="emoji">☕</span>
+                    <span class="label">Java</span>
+                </li>
+                <li class="dnd-item" draggable="true" data-id="4">
+                    <span class="grip">⠿</span>
+                    <span class="rank">4</span>
+                    <span class="emoji">🦀</span>
+                    <span class="label">Rust</span>
+                </li>
+                <li class="dnd-item" draggable="true" data-id="5">
+                    <span class="grip">⠿</span>
+                    <span class="rank">5</span>
+                    <span class="emoji">🔷</span>
+                    <span class="label">TypeScript</span>
+                </li>
+                <li class="dnd-item" draggable="true" data-id="6">
+                    <span class="grip">⠿</span>
+                    <span class="rank">6</span>
+                    <span class="emoji">🐘</span>
+                    <span class="label">PHP</span>
+                </li>
+            </ul>
+
+            <!-- Buttons -->
+            <div class="flex mb-2">
+                <button id="shuffleBtn" class="btn btn-secondary">🔀 Shuffle</button>
+                <button id="resetOrderBtn" class="btn btn-primary">↺ Reset Order</button>
+            </div>
+
+            <!-- Live Order Readout -->
+            <div class="order-readout" id="orderReadout">
+                <strong>Current Order:</strong> <span id="orderText">–</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ───────────────────────────────────────────
+     Task 7 – jQuery Drag & Drop Logic
+     Uses native HTML5 Drag & Drop API events, bound via jQuery
+─────────────────────────────────────────────── -->
+    <script>
+        $(document).ready(function () {
+
+            var $list = $('#dndList');
+            var dragSrc = null;  // the item being dragged
+
+            /* ── Update rank numbers and readout after every reorder ── */
+            function updateRanks() {
+                var names = [];
+                $list.find('.dnd-item').each(function (i) {
+                    $(this).find('.rank').text(i + 1);
+                    names.push($(this).find('.label').text());
+                });
+                $('#orderText').text(names.join(' → '));
+            }
+
+            /* ── Bind drag events to each item ── */
+            function bindDrag() {
+                $list.find('.dnd-item').each(function () {
+                    var el = this;  // native DOM element (needed for drag events)
+
+                    $(el).on('dragstart', function (e) {
+                        dragSrc = el;
+                        // Store index so we can detect direction
+                        e.originalEvent.dataTransfer.effectAllowed = 'move';
+                        e.originalEvent.dataTransfer.setData('text/plain', '');
+                        setTimeout(function () { $(el).addClass('dragging'); }, 0);
+                    });
+
+                    $(el).on('dragend', function () {
+                        $(el).removeClass('dragging');
+                        $list.find('.dnd-item').removeClass('drag-over');
+                        updateRanks();
+                    });
+
+                    $(el).on('dragover', function (e) {
+                        e.preventDefault();
+                        e.originalEvent.dataTransfer.dropEffect = 'move';
+                        $list.find('.dnd-item').removeClass('drag-over');
+                        $(el).addClass('drag-over');
+                        return false;
+                    });
+
+                    $(el).on('dragleave', function () {
+                        $(el).removeClass('drag-over');
+                    });
+
+                    $(el).on('drop', function (e) {
+                        e.stopPropagation();
+                        if (dragSrc !== el) {
+                            // Swap DOM elements
+                            var $src = $(dragSrc);
+                            var $tgt = $(el);
+                            var srcNext = $src.next()[0];
+
+                            // Insert dragged item before target
+                            if ($tgt.index() > $src.index()) {
+                                $tgt.after($src);
+                            } else {
+                                $tgt.before($src);
+                            }
+                        }
+                        return false;
+                    });
+                });
+            }
+
+            // Initial bind and rank display
+            bindDrag();
+            updateRanks();
+
+            /* ── Shuffle button ── */
+            $('#shuffleBtn').on('click', function () {
+                var $items = $list.find('.dnd-item').toArray();
+                // Fisher-Yates shuffle
+                for (var i = $items.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = $items[i]; $items[i] = $items[j]; $items[j] = temp;
+                }
+                // Re-append in shuffled order with a quick fade
+                $list.hide().empty();
+                $.each($items, function () { $list.append(this); });
+                $list.fadeIn(300);
+                bindDrag();
+                updateRanks();
+                // Animate button
+                $(this).addClass('shuffle-anim');
+                var self = this;
+                setTimeout(function () { $(self).removeClass('shuffle-anim'); }, 400);
+            });
+
+            /* ── Reset original order ── */
+            var originalOrder = $list.find('.dnd-item').toArray().map(function (el) {
+                return $(el).data('id');
+            });
+
+            $('#resetOrderBtn').on('click', function () {
+                // Sort by original data-id
+                var $items = $list.find('.dnd-item').toArray();
+                $items.sort(function (a, b) {
+                    return $(a).data('id') - $(b).data('id');
+                });
+                $list.hide().empty();
+                $.each($items, function () { $list.append(this); });
+                $list.fadeIn(300);
+                bindDrag();
+                updateRanks();
+            });
+
+        });
+    </script>
+</body>
+
+</html>

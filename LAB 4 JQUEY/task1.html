@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 1 – Dynamic List Manager | Lab 04</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- jQuery 3.6.0 CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Task 1 – Additional Styles */
+        .list-count {
+            font-size: .85rem;
+            color: #9e9e9e;
+            margin-bottom: .8rem;
+        }
+
+        /* Highlight animation on newly added item */
+        @keyframes addPop {
+            0% {
+                transform: scale(.9);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.03);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .item-new {
+            animation: addPop .35s ease forwards;
+        }
+
+        /* Empty state */
+        .empty-msg {
+            text-align: center;
+            color: #555;
+            padding: 2rem 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Lab 04</a>
+        <span style="color:#9e9e9e;font-size:.9rem;">Task 01 – Dynamic List Manager</span>
+    </nav>
+
+    <!-- ── Page Header ── -->
+    <div class="page-header">
+        <h1>Dynamic List Manager</h1>
+        <p>Add items dynamically, hover to highlight, click delete to remove</p>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="task-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="card">
+            <h2>Task 01 – Dynamic List Manager</h2>
+
+            <!-- Input Section -->
+            <div class="input-group">
+                <input type="text" id="listInput" class="form-control"
+                    placeholder="Type an item and press Add or Enter…" />
+                <button id="addBtn" class="btn btn-primary">+ Add Item</button>
+            </div>
+
+            <!-- Item Count -->
+            <p class="list-count">Items: <span id="itemCount">0</span></p>
+
+            <!-- Dynamic List -->
+            <ul id="dynamicList" class="styled-list">
+                <!-- Items are injected here by jQuery -->
+                <li class="empty-msg" id="emptyMsg">No items yet. Add your first item above!</li>
+            </ul>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="card" style="opacity:.7;">
+            <h2>How It Works</h2>
+            <ul style="padding-left:1.2rem;color:#9e9e9e;font-size:.88rem;line-height:2;">
+                <li>Type text in the input and click <strong>Add Item</strong> (or press <kbd>Enter</kbd>)</li>
+                <li>Hover any item to see hover highlight effect</li>
+                <li>Click the <strong>🗑 Delete</strong> button on any item to remove it with animation</li>
+                <li>Item count updates automatically</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ───────────────────────────────────────────
+     Task 1 – jQuery Logic
+─────────────────────────────────────────────── -->
+    <script>
+        $(document).ready(function () {
+
+            /* ── Helper: update the item count badge ── */
+            function updateCount() {
+                var count = $('#dynamicList li:not(#emptyMsg)').length;
+                $('#itemCount').text(count);
+
+                // Show / hide empty placeholder
+                if (count === 0) {
+                    $('#emptyMsg').show();
+                } else {
+                    $('#emptyMsg').hide();
+                }
+            }
+
+            /* ── Helper: build a list item ── */
+            function buildItem(text) {
+                // Create <li> with item text and a delete button
+                var $li = $('<li>').addClass('item-new');
+                var $span = $('<span>').text(text);
+                var $btn = $('<button>')
+                    .text('🗑 Delete')
+                    .addClass('btn btn-danger btn-sm')
+                    .css('margin-left', '1rem');
+
+                // ── Delete button: slide-up then remove ──
+                $btn.on('click', function () {
+                    $(this).closest('li')
+                        .css('border-left-color', '#ff1744')
+                        .slideUp(300, function () {
+                            $(this).remove();
+                            updateCount();
+                        });
+                });
+
+                return $li.append($span).append($btn);
+            }
+
+            /* ── Add Item ── */
+            function addItem() {
+                var text = $('#listInput').val().trim();
+
+                // Guard: empty input
+                if (!text) {
+                    $('#listInput').addClass('is-invalid').focus();
+                    setTimeout(function () { $('#listInput').removeClass('is-invalid'); }, 1000);
+                    return;
+                }
+
+                // Append item and reset input
+                $('#dynamicList').append(buildItem(text));
+                $('#listInput').val('').focus();
+                updateCount();
+            }
+
+            // Button click
+            $('#addBtn').on('click', addItem);
+
+            // Enter key on input
+            $('#listInput').on('keypress', function (e) {
+                if (e.key === 'Enter') addItem();
+            });
+
+            // Initial count
+            updateCount();
+
+        });
+    </script>
+</body>
+
+</html>

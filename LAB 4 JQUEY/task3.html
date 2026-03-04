@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task 3 – Form Validation | Lab 04</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- jQuery 3.6.0 CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* ── Form Specific Styles ── */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: .88rem;
+            font-weight: 500;
+            margin-bottom: .4rem;
+            color: #a78bfa;
+        }
+
+        .field-icon {
+            position: relative;
+        }
+
+        .field-icon .form-control {
+            padding-right: 2.5rem;
+        }
+
+        .valid-icon {
+            position: absolute;
+            right: .8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            display: none;
+        }
+
+        /* Success/error banners */
+        .form-banner {
+            display: none;
+            border-radius: 8px;
+            padding: .9rem 1.2rem;
+            font-size: .88rem;
+            margin-top: 1.2rem;
+        }
+
+        .form-banner.success {
+            background: rgba(0, 230, 118, .12);
+            border: 1px solid rgba(0, 230, 118, .4);
+            color: #00e676;
+        }
+
+        .form-banner.error {
+            background: rgba(255, 23, 68, .12);
+            border: 1px solid rgba(255, 23, 68, .4);
+            color: #ff1744;
+        }
+
+        /* Password strength bar */
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: #333;
+            margin-top: .4rem;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            width: 0;
+            transition: width .4s, background .4s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">Lab 04</a>
+        <span style="color:#9e9e9e;font-size:.9rem;">Task 03 – Form Validation</span>
+    </nav>
+
+    <!-- ── Page Header ── -->
+    <div class="page-header">
+        <h1>Interactive Form Validation</h1>
+        <p>Real-time validation with error highlights and success feedback – no page reload</p>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="task-container">
+        <a href="index.html" class="back-link">← Back to Home</a>
+
+        <div class="card">
+            <h2>Task 03 – Registration Form</h2>
+
+            <form id="regForm" novalidate>
+
+                <!-- Name -->
+                <div class="form-group" id="nameGroup">
+                    <label for="nameField">Full Name</label>
+                    <div class="field-icon">
+                        <input type="text" id="nameField" class="form-control" placeholder="e.g. Ali Hassan" />
+                        <span class="valid-icon" id="nameIcon">✔</span>
+                    </div>
+                    <p class="error-msg" id="nameError">⚠ Name must be at least 3 characters.</p>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group" id="emailGroup">
+                    <label for="emailField">Email Address</label>
+                    <div class="field-icon">
+                        <input type="email" id="emailField" class="form-control" placeholder="e.g. ali@example.com" />
+                        <span class="valid-icon" id="emailIcon">✔</span>
+                    </div>
+                    <p class="error-msg" id="emailError">⚠ Please enter a valid email address.</p>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group" id="passGroup">
+                    <label for="passField">Password</label>
+                    <div class="field-icon">
+                        <input type="password" id="passField" class="form-control" placeholder="min. 8 characters" />
+                        <span class="valid-icon" id="passIcon">✔</span>
+                    </div>
+                    <!-- Password strength indicator -->
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <p class="error-msg" id="passError">⚠ Password must be at least 8 characters.</p>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width:100%;">
+                    Submit Registration
+                </button>
+
+                <!-- Result banners -->
+                <div class="form-banner success" id="successBanner">
+                    🎉 Registration Successful! Welcome aboard!
+                </div>
+                <div class="form-banner error" id="errorBanner">
+                    ❌ Please fix the errors above before submitting.
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- ───────────────────────────────────────────
+     Task 3 – jQuery Logic
+─────────────────────────────────────────────── -->
+    <script>
+        $(document).ready(function () {
+
+            /* ── Validate NAME on blur ── */
+            $('#nameField').on('blur', function () {
+                validateName();
+            });
+
+            /* ── Validate EMAIL on blur ── */
+            $('#emailField').on('blur', function () {
+                validateEmail();
+            });
+
+            /* ── Validate PASSWORD on blur + show strength ── */
+            $('#passField').on('blur', function () {
+                validatePass();
+            }).on('input', function () {
+                updateStrength($(this).val());
+            });
+
+            /* ────────────── Validators ────────────── */
+
+            function validateName() {
+                var val = $('#nameField').val().trim();
+                if (val.length < 3) {
+                    showError('nameField', 'nameError', 'nameIcon');
+                    return false;
+                }
+                showValid('nameField', 'nameError', 'nameIcon');
+                return true;
+            }
+
+            function validateEmail() {
+                var val = $('#emailField').val().trim();
+                // Simple RFC-style email regex
+                var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!re.test(val)) {
+                    showError('emailField', 'emailError', 'emailIcon');
+                    return false;
+                }
+                showValid('emailField', 'emailError', 'emailIcon');
+                return true;
+            }
+
+            function validatePass() {
+                var val = $('#passField').val();
+                if (val.length < 8) {
+                    showError('passField', 'passError', 'passIcon');
+                    return false;
+                }
+                showValid('passField', 'passError', 'passIcon');
+                return true;
+            }
+
+            /* ── Show error styling ── */
+            function showError(fieldId, errId, iconId) {
+                $('#' + fieldId).removeClass('is-valid').addClass('is-invalid');
+                $('#' + errId).fadeIn(200);
+                $('#' + iconId).hide();
+            }
+
+            /* ── Show valid styling ── */
+            function showValid(fieldId, errId, iconId) {
+                $('#' + fieldId).removeClass('is-invalid').addClass('is-valid');
+                $('#' + errId).fadeOut(200);
+                $('#' + iconId).css({ display: 'block', color: '#00e676' });
+            }
+
+            /* ── Password strength meter ── */
+            function updateStrength(val) {
+                var score = 0;
+                if (val.length >= 8) score++;
+                if (/[A-Z]/.test(val)) score++;
+                if (/[0-9]/.test(val)) score++;
+                if (/[^A-Za-z0-9]/.test(val)) score++;
+
+                var pct = (score / 4) * 100;
+                var color = ['#ff1744', '#ff6d00', '#ffd600', '#00e676'][score - 1] || '#333';
+                $('#strengthFill').css({ width: pct + '%', background: color });
+            }
+
+            /* ── Form submit handler ── */
+            $('#regForm').on('submit', function (e) {
+                e.preventDefault(); // Prevent page reload
+
+                var nameOk = validateName();
+                var emailOk = validateEmail();
+                var passOk = validatePass();
+
+                if (nameOk && emailOk && passOk) {
+                    // All valid – show success
+                    $('#errorBanner').hide();
+                    $('#successBanner').hide().slideDown(400);
+                    // Disable button to prevent re-submit
+                    $('#submitBtn').text('✔ Submitted').prop('disabled', true)
+                        .css({ opacity: .7, cursor: 'not-allowed' });
+                } else {
+                    // Some fields invalid
+                    $('#successBanner').hide();
+                    $('#errorBanner').hide().slideDown(400);
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>
